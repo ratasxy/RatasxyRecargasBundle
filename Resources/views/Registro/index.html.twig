@@ -1,0 +1,49 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+<h1>Mis ventas</h1>
+
+<table class="records_list">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Paquete</th>
+            <th>Compra</th>
+            <th>Venta</th>
+            <th>Porcentaje</th>
+            <th>Ganacia</th>
+            <th>Fecha</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for entity in entities %}
+        <tr class="saludo">
+            <td><a href="{{ path('ventas_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+            <td>{{ entity.paquete }}</td>
+            <td>{{ entity.compra }}</td>
+            <td>{{ entity.venta }}</td>
+            <td>{{ entity.porcentaje }}</td>
+            <td>{{ entity.ganacia }}</td>
+            <td>{{ entity.fecha|date('Y-m-d') }}</td>
+            <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('ventas_show', { 'id': entity.id }) }}">Detalles</a>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+    {% else %}
+        <h2>No tiene ventas</h2>
+    {% endfor %}
+    </tbody>
+</table>
+
+<ul>
+    <li>
+        <a href="{{ path('ventas_new') }}">
+            Hacer nueva venta
+        </a>
+    </li>
+</ul>
+{% endblock %}

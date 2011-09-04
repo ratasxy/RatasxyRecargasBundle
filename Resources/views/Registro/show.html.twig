@@ -1,0 +1,37 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+<h1>Registro</h1>
+
+<table class="record_properties">
+    <tbody>
+        <tr>
+            <th>Id</th>                <td>{{ entity.id }}</td>        </tr>
+        <tr>
+            <th>Paquete</th>                <td>{{ entity.paquete }}</td>        </tr>
+        <tr>
+            <th>Compra</th>                <td>{{ entity.compra }}</td>        </tr>
+        <tr>
+            <th>Venta</th>                <td>{{ entity.venta }}</td>        </tr>
+        <tr>
+            <th>Porcentaje</th>                <td>{{ entity.porcentaje }}</td>        </tr>
+        <tr>
+            <th>Ganacia</th>                <td>{{ entity.ganacia }}</td>        </tr>
+        <tr>
+            <th>Fecha</th>                <td>{{ entity.fecha|date('Y-m-d H:i:s') }}</td>        </tr>
+    </tbody>
+</table>
+
+<ul class="record_actions">
+    <li>
+        <a href="{{ path('ventas') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <form action="{{ path('ventas_delete', { 'id': entity.id }) }}" method="post">
+            {{ form_widget(delete_form) }}
+            <button type="submit">Delete</button>
+        </form>
+    </li>
+</ul>
+{% endblock %}
