@@ -1,5 +1,5 @@
-{% extends '::base.html.twig' %}
-{% block body %}
+{% extends 'RatasxyRecargasBundle::layout.html.twig' %}
+{% block content %}
 <h1>Cliente creation</h1>
 
 <form action="{{ path('cliente_create') }}" method="post" {{ form_enctype(form) }}>

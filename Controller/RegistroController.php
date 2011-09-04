@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use JMS\SecurityExtraBundle\Annotation\Secure;
 use Ratasxy\RecargasBundle\Entity\Registro;
 use Ratasxy\RecargasBundle\Form\RegistroType;
 
@@ -20,14 +21,15 @@ class RegistroController extends Controller
      * Lists all Registro entities.
      *
      * @Route("/", name="ventas")
+     * @Secure(roles="ROLE_USER")
      * @Template()
      */
     public function indexAction()
     {
-        $vendedor = $this->get('security.context')->getToken()->getUser()->getId();
+        $vendedor = $this->get('security.context')->getToken()->getUser();
         $em = $this->getDoctrine()->getEntityManager();
 
-        $entities = $em->getRepository('RatasxyRecargasBundle:Registro')->findby(array('vendedor' => $vendedor));
+        $entities = $em->getRepository('RatasxyRecargasBundle:Registro')->findby(array('vendedor' => $vendedor->getId()));
 
         return array('entities' => $entities);
     }
@@ -43,6 +45,11 @@ class RegistroController extends Controller
         $em = $this->getDoctrine()->getEntityManager();
 
         $entity = $em->getRepository('RatasxyRecargasBundle:Registro')->find($id);
+
+        $vendedor = $this->get('security.context')->getToken()->getUser();
+
+        if($entity !== null && $entity->getVendedor()->getId() != $vendedor->getId())
+            throw $this->createNotFoundException("no te pertenece la venta");
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Registro entity.');
