@@ -1,5 +1,5 @@
-{% extends '::base.html.twig' %}
-{% block body %}
+{% extends 'RatasxyRecargasBundle::layout.html.twig' %}
+{% block content %}
 <h1>Cliente edit</h1>
 
 <form action="{{ path('cliente_update', { 'id': entity.id }) }}" method="post" {{ form_enctype(edit_form) }}>

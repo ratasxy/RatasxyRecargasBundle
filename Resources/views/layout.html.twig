@@ -1,0 +1,13 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+<div id="header"></div>
+<div id="content">
+    <ul>
+        <li><a href="{{ path('ventas') }}">Ventas</a></li>
+        <li><a href="{{ path('cliente') }}">Clientes</a></li>
+    </ul>
+    {% block content %}
+    {% endblock content %}
+</div>
+<div id="footer"></div>
+{% endblock %}
