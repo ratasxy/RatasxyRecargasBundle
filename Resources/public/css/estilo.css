@@ -1,0 +1,28 @@
+/* 
+    Document   : estilo
+    Created on : 04/09/2011, 07:14:08 PM
+    Author     : ratasxy
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+root { 
+    display: block;
+}
+
+.records_list {
+    width: 100%;
+}
+
+.Pendiente {
+    background-color: #ffd;
+}
+
+.Cancelado {
+    background-color: #00aa00;
+}

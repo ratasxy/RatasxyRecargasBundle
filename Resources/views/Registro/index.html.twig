@@ -18,7 +18,7 @@
     </thead>
     <tbody>
     {% for entity in entities %}
-        <tr class="saludo">
+        <tr class="{% if entity.estado %}Cancelado{% else %}Pendiente{% endif %}">
             <td><a href="{{ path('ventas_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
             <td>{{ entity.paquete }}</td>
             <td>{{ entity.compra }}</td>
@@ -35,10 +35,14 @@
                 </ul>
             </td>
         </tr>
-    {% else %}
-        <h2>No tiene ventas</h2>
     {% endfor %}
     </tbody>
+</table>
+<br/>
+<table>
+<tr><th>Tipo</th><th>Caja</th><th>Claro</th></tr>
+<tr class="Pendiente"><td>Pendiente</td><td>{{ calculos.Pendiente.ganancia }}</td><td>{{ calculos.Pendiente.compra }}</td></tr>
+<tr class="Cancelado"><td>Cancelado</td><td>{{ calculos.Cancelado.ganancia }}</td><td>{{ calculos.Cancelado.compra }}</td></tr>
 </table>
 
 <ul>

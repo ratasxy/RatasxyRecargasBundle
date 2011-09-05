@@ -12,4 +12,17 @@ use Doctrine\ORM\EntityRepository;
  */
 class RegistroRepository extends EntityRepository
 {
+    public function sumaPendientes($vendedor, $fecha){     
+        return $this->getEntityManager()
+            ->createQuery('SELECT sum(r.compra) as compra, sum(r.ganacia) as ganancia FROM RatasxyRecargasBundle:Registro r WHERE r.fecha = :fecha AND r.vendedor = :vendedor AND r.estado=0')
+            ->setParameters(array('vendedor' => $vendedor, 'fecha' => $fecha))
+            ->getSingleResult();
+    }
+    
+    public function sumaCancelados($vendedor, $fecha){     
+        return $this->getEntityManager()
+            ->createQuery('SELECT sum(r.compra) as compra, sum(r.ganacia) as ganancia FROM RatasxyRecargasBundle:Registro r WHERE r.fecha = :fecha AND r.vendedor = :vendedor AND r.estado=1')
+            ->setParameters(array('vendedor' => $vendedor, 'fecha' => $fecha))
+            ->getSingleResult();
+    }
 }

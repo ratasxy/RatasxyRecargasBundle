@@ -37,8 +37,10 @@ class RegistroController extends Controller
         $em = $this->getDoctrine()->getEntityManager();
 
         $entities = $em->getRepository('RatasxyRecargasBundle:Registro')->findby(array('vendedor' => $vendedor->getId(), 'fecha' => $fecha));
-
-        return array('entities' => $entities);
+        $pendiente = $em->getRepository('RatasxyRecargasBundle:Registro')->sumaPendientes($vendedor->getId(), $fecha);
+        $cancelado = $em->getRepository('RatasxyRecargasBundle:Registro')->sumaCancelados($vendedor->getId(), $fecha);
+        $calculos = array('Pendiente' => $pendiente, 'Cancelado' => $cancelado);
+        return array('entities' => $entities, 'calculos' => $calculos );
     }
 
     /**
@@ -105,7 +107,7 @@ class RegistroController extends Controller
             $em = $this->getDoctrine()->getEntityManager();
             
             $paquete = $entity->getPaquete();
-            $entity->setCompra($paquete - ($paquete * 0.905));
+            $entity->setCompra($paquete - ($paquete * 0.095));
             $entity->setPorcentaje($entity->getUsuario()->getPorcentaje());
             $entity->setVenta($paquete - ($paquete * $entity->getPorcentaje()));
             $entity->setGanacia($entity->getVenta() - $entity->getCompra());
