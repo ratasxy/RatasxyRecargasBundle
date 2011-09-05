@@ -12,6 +12,7 @@
             <th>Porcentaje</th>
             <th>Ganacia</th>
             <th>Fecha</th>
+            <th>Cliente</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -25,6 +26,7 @@
             <td>{{ entity.porcentaje }}</td>
             <td>{{ entity.ganacia }}</td>
             <td>{{ entity.fecha|date('Y-m-d') }}</td>
+            <td>{{ entity.usuario.nombre }}</td>
             <td>
                 <ul>
                     <li>

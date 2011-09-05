@@ -13,6 +13,7 @@ use Ratasxy\RecargasBundle\Form\RegistroType;
 /**
  * Registro controller.
  *
+ * @Secure(roles="ROLE_USER")
  * @Route("user/ventas")
  */
 class RegistroController extends Controller
@@ -20,16 +21,22 @@ class RegistroController extends Controller
     /**
      * Lists all Registro entities.
      *
-     * @Route("/", name="ventas")
-     * @Secure(roles="ROLE_USER")
+     * @Route("/listar/{fecha}" ,defaults={"fecha" = "hoy"}, name="ventas")
+     * 
      * @Template()
      */
-    public function indexAction()
+    public function indexAction($fecha)
     {
+        //TODO: Remplazar esta manera
+        if($fecha == "hoy"){
+            $fecha = new \DateTime('now');
+            $fecha = $fecha->format("Y-m-d");
+        }
+        
         $vendedor = $this->get('security.context')->getToken()->getUser();
         $em = $this->getDoctrine()->getEntityManager();
 
-        $entities = $em->getRepository('RatasxyRecargasBundle:Registro')->findby(array('vendedor' => $vendedor->getId()));
+        $entities = $em->getRepository('RatasxyRecargasBundle:Registro')->findby(array('vendedor' => $vendedor->getId(), 'fecha' => $fecha));
 
         return array('entities' => $entities);
     }
