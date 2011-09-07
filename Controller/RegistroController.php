@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use JMS\SecurityExtraBundle\Annotation\Secure;
 use Ratasxy\RecargasBundle\Entity\Registro;
 use Ratasxy\RecargasBundle\Form\RegistroType;
+use Ratasxy\RecargasBundle\Form\RegistroEstadoType;
 
 /**
  * Registro controller.
@@ -57,9 +58,9 @@ class RegistroController extends Controller
 
         $vendedor = $this->get('security.context')->getToken()->getUser();
 
-        if($entity !== null && $entity->getVendedor()->getId() != $vendedor->getId())
+        if($entity !== null && $entity->getVendedor()->getId() != $vendedor->getId()){
             throw $this->createNotFoundException("no te pertenece la venta");
-
+        }
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Registro entity.');
         }
@@ -113,7 +114,7 @@ class RegistroController extends Controller
             $entity->setGanacia($entity->getVenta() - $entity->getCompra());
             $entity->setFecha(new \DateTime('now'));
             $entity->setVendedor($vendedor);
-            
+     
             $em->persist($entity);
             $em->flush();
 
@@ -128,6 +129,33 @@ class RegistroController extends Controller
     }
 
     /**
+     * Displays a form to edit an existing Registro entity.
+     *
+     * @Route("/{id}/edit", name="ventas_edit")
+     * @Template()
+     */
+    public function editAction($id)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        
+        $entity = $em->getRepository('RatasxyRecargasBundle:Registro')->find($id);
+        
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Registro entity.');
+        }
+
+        $editForm = $this->createForm(new RegistroEstadoType(), $entity);
+        $deleteForm = $this->createDeleteForm($id);
+
+        return array(
+            'entity'      => $entity,
+            'edit_form'   => $editForm->createView(),
+            'delete_form' => $deleteForm->createView(),
+        );
+    }
+
+
+    /**
      * Edits an existing Registro entity.
      *
      * @Route("/{id}/update", name="ventas_update")
@@ -137,18 +165,16 @@ class RegistroController extends Controller
     public function updateAction($id)
     {
         $em = $this->getDoctrine()->getEntityManager();
-
+        
         $entity = $em->getRepository('RatasxyRecargasBundle:Registro')->find($id);
-
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Registro entity.');
         }
-
-        $editForm   = $this->createForm(new RegistroType(), $entity);
+        $entity2 = $entity;
+        $editForm   = $this->createForm(new RegistroEstadoType(), $entity);
         $deleteForm = $this->createDeleteForm($id);
 
         $request = $this->getRequest();
-
         $editForm->bindRequest($request);
 
         if ($editForm->isValid()) {

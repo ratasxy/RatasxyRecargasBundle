@@ -23,7 +23,7 @@
 
 <ul class="record_actions">
     <li>
-        <a href="{{ path('ventas') }}">
+        <a href="{{ path('ventas', { 'fecha': entity.fecha|date('Y-m-d') }) }}">
             Back to the list
         </a>
     </li>
