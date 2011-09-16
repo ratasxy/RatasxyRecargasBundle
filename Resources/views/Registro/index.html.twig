@@ -1,7 +1,12 @@
 {% extends 'RatasxyRecargasBundle::layout.html.twig' %}
 {% block content %}
 <h1>Mis ventas</h1>
-
+{% block search %}
+    <form action="{{ path('ventas_searching') }}" method="post">
+            {{ form_widget(search_form) }}
+            <button type="submit">Buscar</button>
+    </form>
+{% endblock search %}
 <table class="records_list">
     <thead>
         <tr>

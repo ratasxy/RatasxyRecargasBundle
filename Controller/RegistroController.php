@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use JMS\SecurityExtraBundle\Annotation\Secure;
 use Ratasxy\RecargasBundle\Entity\Registro;
 use Ratasxy\RecargasBundle\Form\RegistroType;
+use Ratasxy\RecargasBundle\Form\SearchType;
 use Ratasxy\RecargasBundle\Form\RegistroEstadoType;
 
 /**
@@ -22,26 +23,28 @@ class RegistroController extends Controller
     /**
      * Lists all Registro entities.
      *
-     * @Route("/listar/{fecha}" ,defaults={"fecha" = "hoy"}, name="ventas")
+     * @Route("/listar/{fecha}/{vendedor}" ,defaults={"fecha" = "hoy", "vendedor" = "yo"}, name="ventas")
      * 
      * @Template()
      */
-    public function indexAction($fecha)
+    public function indexAction($fecha, $vendedor)
     {
         //TODO: Remplazar esta manera
         if($fecha == "hoy"){
             $fecha = new \DateTime('now');
             $fecha = $fecha->format("Y-m-d");
         }
-        
-        $vendedor = $this->get('security.context')->getToken()->getUser();
+        if($vendedor == "yo"){
+        $vendedor = $this->get('security.context')->getToken()->getUser()->getId();
+        }
         $em = $this->getDoctrine()->getEntityManager();
 
-        $entities = $em->getRepository('RatasxyRecargasBundle:Registro')->findby(array('vendedor' => $vendedor->getId(), 'fecha' => $fecha));
-        $pendiente = $em->getRepository('RatasxyRecargasBundle:Registro')->sumaPendientes($vendedor->getId(), $fecha);
-        $cancelado = $em->getRepository('RatasxyRecargasBundle:Registro')->sumaCancelados($vendedor->getId(), $fecha);
+        $entities = $em->getRepository('RatasxyRecargasBundle:Registro')->findby(array('vendedor' => $vendedor, 'fecha' => $fecha));
+        $pendiente = $em->getRepository('RatasxyRecargasBundle:Registro')->sumaPendientes($vendedor, $fecha);
+        $cancelado = $em->getRepository('RatasxyRecargasBundle:Registro')->sumaCancelados($vendedor, $fecha);
         $calculos = array('Pendiente' => $pendiente, 'Cancelado' => $cancelado);
-        return array('entities' => $entities, 'calculos' => $calculos );
+        $search_form = $this->createForm(new SearchType());
+        return array('entities' => $entities, 'calculos' => $calculos, 'search_form' => $search_form->createView() );
     }
 
     /**
@@ -193,7 +196,7 @@ class RegistroController extends Controller
 
     /**
      * Deletes a Registro entity.
-     *
+     * @Secure(roles="ROLE_ADMIN")
      * @Route("/{id}/delete", name="ventas_delete")
      * @Method("post")
      */
@@ -225,5 +228,36 @@ class RegistroController extends Controller
             ->add('id', 'hidden')
             ->getForm()
         ;
+    }
+    
+    /**
+     * @Route("/searching", name="ventas_searching")
+     * @Template()
+     */
+    public function search_redirectAction()
+    {
+        $request = $this->getRequest();
+        
+        $data = array();
+
+        $form = $this->createForm(new SearchType(), $data);
+
+        if ('POST' === $request->getMethod()) {
+            $form->bindRequest($request);
+            if ($form->isValid()) {
+                $data = $form->getData();
+                $fecha = $data['fecha'];
+                $fecha = $fecha->format("Y-m-d");
+                return $this->redirect($this->generateUrl('ventas',
+                    array(
+                        'fecha' => $fecha,
+                    )
+                ));
+            }
+        }
+        else
+            return $this->redirect(
+                $this->generateUrl('historico')
+            );
     }
 }

@@ -37,6 +37,11 @@ class Usuario extends UsuarioBase
      */
     protected $registros;
     
+    /**
+     * @ORM\OneToMany(targetEntity="Pagos", mappedBy="pagos")
+     */
+    protected $pagos;
+    
     public function __construct()
     {
         parent::__construct();
@@ -58,6 +63,15 @@ class Usuario extends UsuarioBase
     public function setRegistros($registros) {
         $this->registros = $registros;
     }
+    
+    public function getPagos() {
+        return $this->pagos;
+    }
+
+    public function setPagos($pagos) {
+        $this->pagos = $pagos;
+    }
+
 
 
 
